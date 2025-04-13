@@ -59,7 +59,7 @@
       this.stats[`player${this.turn + 1}`].totalDamage += damage;
 
       // Check for special attack activation (every 10 attacks)
-      if (this.stats[`player${this.turn + 1}`].attacks % 10 === 0) {
+      if (this.stats[`player${this.turn + 1}`].attacks % 1 === 0) {
         this.stats[`player${this.turn + 1}`].specialAttackReady = true;
       }
 
@@ -125,7 +125,7 @@
 
         // Check for special attack
         if (game.stats[`player${game.turn + 1}`].usingSpecial) {
-          fiftyFifty = game.rollDice([0, 1], 0);
+          const fiftyFifty = Math.random() < 0.5;
           if (!fiftyFifty) {
             roll = 0;
             secondRoll = 0;
@@ -133,8 +133,8 @@
           } else {
             secondRoll = game.rollDice([0, 20], 0);
             game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
+            roll += secondRoll;
           }
-          roll += secondRoll;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
           game.stats[`player${game.turn + 1}`].usingSpecial = false;
         } else {
