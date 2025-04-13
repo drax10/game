@@ -123,7 +123,7 @@
 
         // Check for special attack
         if (game.stats[`player${game.turn + 1}`].usingSpecial) {
-          secondRoll = game.rollDice([0, 20], 0);
+          secondRoll = game.rollDice([0, 20], 0.5);
           roll += secondRoll;
           game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
