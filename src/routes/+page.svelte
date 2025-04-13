@@ -151,11 +151,6 @@
       onActionSelect={selectAction}
       onDiceRoll={executeDiceAction}
     />
-
-    <!-- Turn indicator -->
-    <div class="turn-indicator">
-      Player {game.turn + 1}'s turn
-    </div>
   </div>
 </div>
 
