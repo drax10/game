@@ -6,39 +6,56 @@
   export let onActionSelect;
   export let onDiceRoll;
   export let isUpsideDown = false;
+
+  function getEnemyPlayer() {
+    return player === 1 ? 2 : 1;
+  }
+
+  function getCurrentPlayer() {
+    return player;
+  }
 </script>
 
 <div class="player-view" class:upside-down={isUpsideDown}>
-  {#if game.stats[`player${player}`].specialAttackReady}
-    <div class="special-attack-ready">SPECIAL READY!</div>
-  {:else}
-    <div class="special-attack-progress">
-      SPECIAL: {game.stats[`player${player}`].attacks % 10}/10
-    </div>
-  {/if}
   <div class="roll-hit-container">
     <div class="hit-display">
       HIT: {game.lastHit !== null ? game.lastHit : ""}
       {game.lastHit === 0 ? "☠️" : ""}
     </div>
     <div class="roll-display">ROLL: {game.lastRoll}</div>
+
+    <br />
+    {#if game.stats[`player${player}`].specialAttackReady}
+      <div class="special-attack-ready">SPECIAL READY!</div>
+    {:else}
+      <div class="special-attack-progress">
+        SPECIAL: {game.stats[`player${player}`].attacks % 10}/10
+      </div>
+    {/if}
+
     <div class="enemy-hp-bar">
       <div class="enemy-hp-text">
-        Enemy HP: {game.players[1].hp}/{game.maxHealth}
+        Enemy HP: {game.players[getEnemyPlayer() - 1].hp}/{game.maxHealth}
       </div>
       <div class="enemy-hp-bar-outer">
         <div
           class="enemy-hp-bar-inner"
-          style="width: {(game.players[1].hp / game.maxHealth) * 100}%"
+          style="width: {(game.players[getEnemyPlayer() - 1].hp /
+            game.maxHealth) *
+            100}%"
         ></div>
       </div>
     </div>
     <div class="hp-bar">
-      <div class="hp-text">HP: {game.players[0].hp}/{game.maxHealth}</div>
+      <div class="hp-text">
+        HP: {game.players[getCurrentPlayer() - 1].hp}/{game.maxHealth}
+      </div>
       <div class="hp-bar-outer">
         <div
           class="hp-bar-inner"
-          style="width: {(game.players[0].hp / game.maxHealth) * 100}%"
+          style="width: {(game.players[getCurrentPlayer() - 1].hp /
+            game.maxHealth) *
+            100}%"
         ></div>
       </div>
     </div>
@@ -46,25 +63,28 @@
 
   <div class="action-container">
     <div class="action-box">
-      <div class="action-text" class:disabled={game.turn === 1}>
+      <div class="action-text" class:disabled={game.turn !== player - 1}>
         <div
-          class:selected={selectedAction === "attack" && game.turn === 0}
-          on:click={() => game.turn === 0 && onActionSelect("attack")}
+          class:selected={selectedAction === "attack" &&
+            game.turn === player - 1}
+          on:click={() => game.turn === player - 1 && onActionSelect("attack")}
         >
-          Attack
+          {#if selectedAction === "attack" && game.turn === player - 1}>
+          {/if}Attack
         </div>
         <div
-          class:selected={selectedAction === "heal" && game.turn === 0}
-          on:click={() => game.turn === 0 && onActionSelect("heal")}
+          class:selected={selectedAction === "heal" && game.turn === player - 1}
+          on:click={() => game.turn === player - 1 && onActionSelect("heal")}
         >
-          Heal
+          {#if selectedAction === "heal" && game.turn === player - 1}>
+          {/if}Heal
         </div>
       </div>
       <div
         class="dice-image"
-        class:disabled={game.turn === 1}
+        class:disabled={game.turn !== player - 1}
         class:rolling={isRolling}
-        on:click={() => game.turn === 0 && onDiceRoll()}
+        on:click={() => game.turn === player - 1 && onDiceRoll()}
       >
         <svg viewBox="0 0 24 24" width="100%" height="100%">
           <rect
@@ -119,6 +139,10 @@
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
+    border-right: 3px solid black;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   .action-text.disabled {
@@ -127,7 +151,15 @@
   }
 
   .action-text div {
-    padding: 2px 5px;
+    padding: 8px 5px;
+    border-bottom: 1px solid black;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+  }
+
+  .action-text div:last-child {
+    border-bottom: none;
   }
 
   .action-text div.selected {
@@ -137,7 +169,6 @@
   .dice-image {
     width: 50px;
     height: 50px;
-    border-left: 3px solid black;
     padding: 5px;
     cursor: pointer;
     transition: transform 0.2s ease;
