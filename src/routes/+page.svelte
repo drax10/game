@@ -1,5 +1,6 @@
 <script>
   import PlayerView from "$lib/components/PlayerView.svelte";
+  import WinnerMessage from "$lib/components/WinnerMessage.svelte";
 
   // Game logic
   class BattleGame {
@@ -99,6 +100,7 @@
 
   // Initialize game
   let game = new BattleGame();
+  let showStats = false;
   let winner = null;
   let selectedAction = "attack"; // Default selected action
   let isRolling = false; // For dice animation
@@ -123,7 +125,7 @@
 
         // Check for special attack
         if (game.stats[`player${game.turn + 1}`].usingSpecial) {
-          secondRoll = game.rollDice([0, 20], 0.5);
+          secondRoll = game.rollDice([0, 20], 0);
           roll += secondRoll;
           game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
@@ -173,42 +175,13 @@
     game.turn = startingPlayer; // Set the new starting player
     winner = null;
     selectedAction = "attack";
+    showStats = false;
   }
 </script>
 
 <div class="game-container">
-  {#if winner}
-    <div class="winner-message">
-      <div class="game-over-container">
-        <h2 class="game-over">GAME OVER</h2>
-        <h2 class="winner">{winner} WINS!</h2>
-        <div class="stats-container">
-          <div class="player-stats">
-            <h4>P1</h4>
-            <div class="stat-row">
-              <span class="stat-label">DMG:</span>
-              <span class="stat-value">{game.stats.player1.totalDamage}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">HL:</span>
-              <span class="stat-value">{game.stats.player1.totalHealing}</span>
-            </div>
-          </div>
-          <div class="player-stats">
-            <h4>P2</h4>
-            <div class="stat-row">
-              <span class="stat-label">DMG:</span>
-              <span class="stat-value">{game.stats.player2.totalDamage}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">HL:</span>
-              <span class="stat-value">{game.stats.player2.totalHealing}</span>
-            </div>
-          </div>
-        </div>
-        <button class="play-again" on:click={resetGame}>PLAY AGAIN</button>
-      </div>
-    </div>
+  {#if winner && showStats}
+    <WinnerMessage {game} {winner} onPlayAgain={resetGame} />
   {/if}
 
   <div class="game-ui">
@@ -221,6 +194,12 @@
       onDiceRoll={executeDiceAction}
       isUpsideDown={true}
     />
+
+    {#if game.gameOver}
+      <button class="see-stats" on:click={() => (showStats = true)}>
+        GAME OVER - SEE STATS
+      </button>
+    {/if}
 
     <PlayerView
       player={2}
@@ -342,5 +321,25 @@
   .play-again:hover {
     background: #fff;
     color: #000;
+  }
+
+  .see-stats {
+    background: #000;
+    color: #ff0;
+    border: 2px solid #ff0;
+    padding: 8px 16px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .see-stats:hover {
+    background: #ff0;
+    color: #000;
+    box-shadow: 0 0 10px #ff0;
   }
 </style>

@@ -23,10 +23,6 @@
 
 <div class="player-view" class:upside-down={isUpsideDown}>
   <div class="roll-hit-container">
-    <div class="hit-display">
-      HIT: {game.lastHit !== null ? game.lastHit : ""}
-      {game.lastHit === 0 ? "☠️" : ""}
-    </div>
     <div class="roll-display">
       {#if game.lastRoll !== null}
         {#if typeof game.lastRoll === "string" && game.lastRoll.includes("+")}
@@ -53,15 +49,18 @@
           </button>
         {/if}
       </div>
-    {:else}
-      <div class="special-attack-progress">
-        SPECIAL: {game.stats[`player${player}`].attacks % 10}/10
-      </div>
     {/if}
 
     <div class="enemy-hp-bar">
       <div class="enemy-hp-text">
-        Enemy HP: {game.players[getEnemyPlayer() - 1].hp}/{game.maxHealth}
+        <span class="special-progress enemy-special-progress"
+          >SPECIAL: {game.stats[`player${getEnemyPlayer()}`].attacks %
+            10}/10</span
+        >
+        <span
+          >Enemy HP: {game.players[getEnemyPlayer() - 1]
+            .hp}/{game.maxHealth}</span
+        >
       </div>
       <div class="enemy-hp-bar-outer">
         <div
@@ -74,7 +73,12 @@
     </div>
     <div class="hp-bar">
       <div class="hp-text">
-        HP: {game.players[getCurrentPlayer() - 1].hp}/{game.maxHealth}
+        <span class="special-progress"
+          >SPECIAL: {game.stats[`player${player}`].attacks % 10}/10</span
+        >
+        <span
+          >HP: {game.players[getCurrentPlayer() - 1].hp}/{game.maxHealth}</span
+        >
       </div>
       <div class="hp-bar-outer">
         <div
@@ -116,22 +120,7 @@
         class:rolling={isRolling}
         on:click={() => game.turn === player - 1 && onDiceRoll()}
       >
-        <svg viewBox="0 0 24 24" width="100%" height="100%">
-          <rect
-            x="2"
-            y="2"
-            width="20"
-            height="20"
-            fill="#d0d0d0"
-            stroke="black"
-            stroke-width="1"
-          />
-          <circle cx="7" cy="7" r="2" fill="black" />
-          <circle cx="17" cy="7" r="2" fill="black" />
-          <circle cx="7" cy="17" r="2" fill="black" />
-          <circle cx="17" cy="17" r="2" fill="black" />
-          <circle cx="12" cy="12" r="2" fill="black" />
-        </svg>
+        <img src="/dice.png" alt="Dice" style="border-radius: 35px;" />
       </div>
     </div>
   </div>
@@ -158,7 +147,7 @@
   .action-box {
     display: flex;
     border: 3px solid black;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     overflow: hidden;
     width: 100%;
     max-width: 500px;
@@ -182,7 +171,7 @@
 
   .action-text div {
     padding: 8px 5px;
-    border-bottom: 1px solid black;
+    border-bottom: 3px solid black;
     min-height: 30px;
     display: flex;
     align-items: center;
@@ -197,11 +186,20 @@
   }
 
   .dice-image {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
     padding: 5px;
     cursor: pointer;
     transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dice-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .dice-image.disabled {
@@ -261,7 +259,10 @@
   .enemy-hp-text {
     font-size: 14px;
     font-weight: bold;
-    text-align: center;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
   }
 
   .enemy-hp-bar-outer {
@@ -269,6 +270,7 @@
     border: 2px solid black;
     background-color: white;
     position: relative;
+    margin-bottom: 10px;
   }
 
   .enemy-hp-bar-inner {
@@ -301,6 +303,9 @@
     font-size: 14px;
     font-weight: bold;
     text-align: right;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
   }
 
   .special-attack-container {
@@ -340,5 +345,14 @@
     text-shadow: 2px 2px 0 black;
     min-height: 30px;
     text-align: center;
+  }
+
+  .special-progress {
+    color: #ff0;
+    text-shadow: 1px 1px 0 #000;
+  }
+  .enemy-special-progress {
+    color: #000;
+    text-shadow: none;
   }
 </style>
