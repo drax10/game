@@ -17,6 +17,7 @@
 
   function toggleSpecial() {
     game.toggleSpecialAttack();
+    game = game;
   }
 </script>
 
@@ -95,14 +96,18 @@
           on:click={() => game.turn === player - 1 && onActionSelect("attack")}
         >
           {#if selectedAction === "attack" && game.turn === player - 1}>
-          {/if}Attack
+          {/if}
+          {game.stats[`player${player}`].usingSpecial
+            ? "DOUBLE ATTACK"
+            : "Attack"}
         </div>
         <div
           class:selected={selectedAction === "heal" && game.turn === player - 1}
           on:click={() => game.turn === player - 1 && onActionSelect("heal")}
         >
           {#if selectedAction === "heal" && game.turn === player - 1}>
-          {/if}Heal
+          {/if}
+          {game.stats[`player${player}`].usingSpecial ? "HEAL +25" : "Heal"}
         </div>
       </div>
       <div

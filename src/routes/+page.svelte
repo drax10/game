@@ -57,8 +57,8 @@
       this.stats[`player${this.turn + 1}`].attacks++;
       this.stats[`player${this.turn + 1}`].totalDamage += damage;
 
-      // Check for special attack activation
-      if (this.stats[`player${this.turn + 1}`].attacks % 2 === 0) {
+      // Check for special attack activation (every 10 attacks)
+      if (this.stats[`player${this.turn + 1}`].attacks % 10 === 0) {
         this.stats[`player${this.turn + 1}`].specialAttackReady = true;
       }
 
@@ -66,7 +66,7 @@
     }
 
     heal({ hp, player }) {
-      const healing = hp;
+      const healing = hp; // Use the passed in healing amount
       const oldHp = this.players[player].hp;
       this.players[player].hp += healing;
       this.players[player].hp = Math.min(
@@ -139,9 +139,8 @@
 
         // Check for special attack
         if (game.stats[`player${game.turn + 1}`].usingSpecial) {
-          const baseHeal = roll;
           roll += 25;
-          game.lastRoll = `${baseHeal} + 25`;
+          game.lastRoll = `${roll - 25} + 25`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
           game.stats[`player${game.turn + 1}`].usingSpecial = false;
         } else {
