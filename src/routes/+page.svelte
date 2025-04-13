@@ -59,7 +59,7 @@
       this.stats[`player${this.turn + 1}`].totalDamage += damage;
 
       // Check for special attack activation (every 10 attacks)
-      if (this.stats[`player${this.turn + 1}`].attacks % 1 === 0) {
+      if (this.stats[`player${this.turn + 1}`].attacks % 10 === 0) {
         this.stats[`player${this.turn + 1}`].specialAttackReady = true;
       }
 
