@@ -12,6 +12,11 @@
       this.lastRoll = null;
       this.lastHit = null;
       this.gameOver = false;
+      this.history = [];
+      this.stats = {
+        player1: { attacks: 0, heals: 0, totalDamage: 0, totalHealing: 0 },
+        player2: { attacks: 0, heals: 0, totalDamage: 0, totalHealing: 0 },
+      };
     }
 
     rollDice(range = [0, 20], zeroChance = 0.25) {
@@ -23,18 +28,33 @@
       return Math.ceil(Math.random() * rangeSize) + range[0];
     }
 
+    logAction(action, player, value) {
+      const timestamp = new Date().toLocaleTimeString();
+      this.history.push({ timestamp, action, player, value });
+    }
+
     attack({ hp, player }) {
-      this.players[player].hp -= hp;
+      const damage = hp;
+      this.players[player].hp -= damage;
       this.players[player].hp = Math.max(this.players[player].hp, 0);
+      this.logAction("attack", Number(!player), damage);
+      this.stats[`player${Number(!player) + 1}`].attacks++;
+      this.stats[`player${Number(!player) + 1}`].totalDamage += damage;
       this.checkGameOver();
     }
 
     heal({ hp, player }) {
-      this.players[player].hp += hp;
+      const healing = hp;
+      const oldHp = this.players[player].hp;
+      this.players[player].hp += healing;
       this.players[player].hp = Math.min(
         this.players[player].hp,
         this.maxHealth,
       );
+      const actualHealing = this.players[player].hp - oldHp;
+      this.logAction("heal", player, actualHealing);
+      this.stats[`player${player + 1}`].heals++;
+      this.stats[`player${player + 1}`].totalHealing += actualHealing;
     }
 
     nextTurn() {
@@ -53,6 +73,7 @@
   let winner = null;
   let selectedAction = "attack"; // Default selected action
   let isRolling = false; // For dice animation
+  let startingPlayer = 0; // Track who starts first
 
   // Handle action selection
   function selectAction(action) {
@@ -96,7 +117,9 @@
 
   // Reset game
   function resetGame() {
+    startingPlayer = Number(!startingPlayer); // Switch starting player
     game = new BattleGame();
+    game.turn = startingPlayer; // Set the new starting player
     winner = null;
     selectedAction = "attack";
   }
@@ -107,9 +130,61 @@
     <div class="winner-message">
       <div class="upside-down">
         <h2>{winner} wins!</h2>
+        <div class="game-stats">
+          <h3>Game Statistics</h3>
+          <div class="player-stats">
+            <h4>Player 1</h4>
+            <p>Attacks: {game.stats.player1.attacks}</p>
+            <p>Heals: {game.stats.player1.heals}</p>
+            <p>Total Damage: {game.stats.player1.totalDamage}</p>
+            <p>Total Healing: {game.stats.player1.totalHealing}</p>
+          </div>
+          <div class="player-stats">
+            <h4>Player 2</h4>
+            <p>Attacks: {game.stats.player2.attacks}</p>
+            <p>Heals: {game.stats.player2.heals}</p>
+            <p>Total Damage: {game.stats.player2.totalDamage}</p>
+            <p>Total Healing: {game.stats.player2.totalHealing}</p>
+          </div>
+          <div class="game-log">
+            <h4>Game Log</h4>
+            {#each game.history as entry}
+              <p>
+                [{entry.timestamp}] Player {entry.player + 1}
+                {entry.action === "attack" ? "attacked" : "healed"} for {entry.value}
+              </p>
+            {/each}
+          </div>
+        </div>
         <button on:click={resetGame}>Play Again</button>
       </div>
       <h2>{winner} wins!</h2>
+      <div class="game-stats">
+        <h3>Game Statistics</h3>
+        <div class="player-stats">
+          <h4>Player 1</h4>
+          <p>Attacks: {game.stats.player1.attacks}</p>
+          <p>Heals: {game.stats.player1.heals}</p>
+          <p>Total Damage: {game.stats.player1.totalDamage}</p>
+          <p>Total Healing: {game.stats.player1.totalHealing}</p>
+        </div>
+        <div class="player-stats">
+          <h4>Player 2</h4>
+          <p>Attacks: {game.stats.player2.attacks}</p>
+          <p>Heals: {game.stats.player2.heals}</p>
+          <p>Total Damage: {game.stats.player2.totalDamage}</p>
+          <p>Total Healing: {game.stats.player2.totalHealing}</p>
+        </div>
+        <div class="game-log">
+          <h4>Game Log</h4>
+          {#each game.history as entry}
+            <p>
+              [{entry.timestamp}] Player {entry.player + 1}
+              {entry.action === "attack" ? "attacked" : "healed"} for {entry.value}
+            </p>
+          {/each}
+        </div>
+      </div>
       <button on:click={resetGame}>Play Again</button>
     </div>
   {/if}
@@ -151,7 +226,7 @@
     flex-direction: column;
     gap: 20px;
     justify-content: space-between;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 50px);
   }
 
   .winner-message {
@@ -166,6 +241,8 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
+    padding: 20px;
+    overflow-y: auto;
   }
 
   .upside-down {
@@ -178,5 +255,32 @@
     border: 2px solid black;
     background-color: white;
     cursor: pointer;
+  }
+
+  .game-stats {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .player-stats {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  .game-log {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+  }
+
+  .game-log p {
+    margin: 5px 0;
+    font-size: 12px;
   }
 </style>
