@@ -126,22 +126,22 @@
     />
 
     <!-- Roll and Hit display (center) -->
-    {#if game.lastRoll !== null}
-      <div class="roll-hit-container upside-down">
-        <div class="hit-display">
-          HIT: {game.lastHit !== null ? game.lastHit : ""}
-          {game.lastHit === 0 ? "☠️" : ""}
-        </div>
-        <div class="roll-display">ROLL: {game.lastRoll}</div>
+    <!-- {#if game.lastRoll !== null} -->
+    <div class="roll-hit-container upside-down">
+      <div class="hit-display">
+        HIT: {game.lastHit !== null ? game.lastHit : ""}
+        {game.lastHit === 0 ? "☠️" : ""}
       </div>
-      <div class="roll-hit-container">
-        <div class="hit-display">
-          HIT: {game.lastHit !== null ? game.lastHit : ""}
-          {game.lastHit === 0 ? "☠️" : ""}
-        </div>
-        <div class="roll-display">ROLL: {game.lastRoll}</div>
+      <div class="roll-display">ROLL: {game.lastRoll}</div>
+    </div>
+    <div class="roll-hit-container">
+      <div class="hit-display">
+        HIT: {game.lastHit !== null ? game.lastHit : ""}
+        {game.lastHit === 0 ? "☠️" : ""}
       </div>
-    {/if}
+      <div class="roll-display">ROLL: {game.lastRoll}</div>
+    </div>
+    <!-- {/if} -->
 
     <PlayerView
       player={0}
