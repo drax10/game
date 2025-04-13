@@ -39,7 +39,7 @@
     </div>
 
     <div class="action-container">
-      <div class="action-box">
+      <div class="action-box" style="flex-direction: row-reverse;">
         <div
           class="dice-image"
           class:disabled={game.turn === 0}
