@@ -14,8 +14,20 @@
       this.gameOver = false;
       this.history = [];
       this.stats = {
-        player1: { attacks: 0, heals: 0, totalDamage: 0, totalHealing: 0 },
-        player2: { attacks: 0, heals: 0, totalDamage: 0, totalHealing: 0 },
+        player1: {
+          attacks: 0,
+          heals: 0,
+          totalDamage: 0,
+          totalHealing: 0,
+          specialAttackReady: false,
+        },
+        player2: {
+          attacks: 0,
+          heals: 0,
+          totalDamage: 0,
+          totalHealing: 0,
+          specialAttackReady: false,
+        },
       };
     }
 
@@ -38,8 +50,14 @@
       this.players[player].hp -= damage;
       this.players[player].hp = Math.max(this.players[player].hp, 0);
       this.logAction("attack", Number(!player), damage);
-      this.stats[`player${Number(!player) + 1}`].attacks++;
-      this.stats[`player${Number(!player) + 1}`].totalDamage += damage;
+      this.stats[`player${this.turn + 1}`].attacks++;
+      this.stats[`player${this.turn + 1}`].totalDamage += damage;
+
+      // Check for special attack activation
+      if (this.stats[`player${this.turn + 1}`].attacks % 10 === 0) {
+        this.stats[`player${this.turn + 1}`].specialAttackReady = true;
+      }
+
       this.checkGameOver();
     }
 
@@ -89,12 +107,27 @@
     // Simulate dice rolling animation
     setTimeout(() => {
       if (selectedAction === "attack") {
-        const roll = game.rollDice([0, 20], 0.25);
+        let roll = game.rollDice([0, 20], 0.25);
+
+        // Check for special attack
+        if (game.stats[`player${game.turn + 1}`].specialAttackReady) {
+          const secondRoll = game.rollDice([0, 20], 0.25);
+          roll += secondRoll;
+          game.stats[`player${game.turn + 1}`].specialAttackReady = false;
+        }
+
         game.lastRoll = roll;
         game.lastHit = roll;
         game.attack({ hp: roll, player: Number(!game.turn) });
       } else if (selectedAction === "heal") {
-        const roll = game.rollDice([5, 15], 0);
+        let roll = game.rollDice([5, 15], 0);
+
+        // Check for special attack
+        if (game.stats[`player${game.turn + 1}`].specialAttackReady) {
+          roll += 25;
+          game.stats[`player${game.turn + 1}`].specialAttackReady = false;
+        }
+
         game.lastRoll = roll;
         game.heal({ hp: roll, player: game.turn });
       }
@@ -172,7 +205,7 @@
     />
 
     <PlayerView
-      player={0}
+      player={2}
       {game}
       {isRolling}
       {selectedAction}
