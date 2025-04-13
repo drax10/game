@@ -125,9 +125,16 @@
 
         // Check for special attack
         if (game.stats[`player${game.turn + 1}`].usingSpecial) {
-          secondRoll = game.rollDice([0, 20], 0);
+          fiftyFifty = game.rollDice([0, 1], 0);
+          if (!fiftyFifty) {
+            roll = 0;
+            secondRoll = 0;
+            game.lastRoll = `Critical Miss!`;
+          } else {
+            secondRoll = game.rollDice([0, 20], 0);
+            game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
+          }
           roll += secondRoll;
-          game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
           game.stats[`player${game.turn + 1}`].usingSpecial = false;
         } else {
