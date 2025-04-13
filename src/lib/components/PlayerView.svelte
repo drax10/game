@@ -10,6 +10,34 @@
 
 <div class="player-view" class:upside-down={isUpsideDown}>
   {#if isUpsideDown}
+    <div class="roll-hit-container">
+      <div class="hit-display">
+        HIT: {game.lastHit !== null ? game.lastHit : ""}
+        {game.lastHit === 0 ? "☠️" : ""}
+      </div>
+      <div class="roll-display">ROLL: {game.lastRoll}</div>
+      <div class="enemy-hp-bar">
+        <div class="enemy-hp-text">
+          Enemy HP: {game.players[0].hp}/{game.maxHealth}
+        </div>
+        <div class="enemy-hp-bar-outer">
+          <div
+            class="enemy-hp-bar-inner"
+            style="width: {(game.players[0].hp / game.maxHealth) * 100}%"
+          ></div>
+        </div>
+      </div>
+      <div class="hp-bar">
+        <div class="hp-text">HP: {game.players[1].hp}/{game.maxHealth}</div>
+        <div class="hp-bar-outer">
+          <div
+            class="hp-bar-inner"
+            style="width: {(game.players[1].hp / game.maxHealth) * 100}%"
+          ></div>
+        </div>
+      </div>
+    </div>
+
     <div class="action-container">
       <div class="action-box">
         <div
@@ -51,20 +79,24 @@
         </div>
       </div>
     </div>
-
-    <div class="hp-container">
-      <div class="hp-bar">
-        <div class="hp-text">HP: {game.players[1].hp}/{game.maxHealth}</div>
-        <div class="hp-bar-outer">
+  {:else}
+    <div class="roll-hit-container">
+      <div class="hit-display">
+        HIT: {game.lastHit !== null ? game.lastHit : ""}
+        {game.lastHit === 0 ? "☠️" : ""}
+      </div>
+      <div class="roll-display">ROLL: {game.lastRoll}</div>
+      <div class="enemy-hp-bar">
+        <div class="enemy-hp-text">
+          Enemy HP: {game.players[1].hp}/{game.maxHealth}
+        </div>
+        <div class="enemy-hp-bar-outer">
           <div
-            class="hp-bar-inner"
+            class="enemy-hp-bar-inner"
             style="width: {(game.players[1].hp / game.maxHealth) * 100}%"
           ></div>
         </div>
       </div>
-    </div>
-  {:else}
-    <div class="hp-container">
       <div class="hp-bar">
         <div class="hp-text">HP: {game.players[0].hp}/{game.maxHealth}</div>
         <div class="hp-bar-outer">
@@ -125,6 +157,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
 
   .upside-down {
@@ -134,6 +167,7 @@
   .action-container {
     display: flex;
     justify-content: center;
+    width: 100%;
   }
 
   .action-box {
@@ -142,6 +176,7 @@
     border-radius: 5px;
     overflow: hidden;
     width: 100%;
+    max-width: 500px;
   }
 
   .action-text {
@@ -200,14 +235,57 @@
     }
   }
 
-  .hp-container {
-    margin: 5px 0;
+  .roll-hit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .roll-display,
+  .hit-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    text-shadow: 2px 2px 0 black;
+  }
+
+  .enemy-hp-bar {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .enemy-hp-text {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .enemy-hp-bar-outer {
+    height: 15px;
+    border: 2px solid black;
+    background-color: white;
+    position: relative;
+  }
+
+  .enemy-hp-bar-inner {
+    height: 100%;
+    background-color: #ff0000;
+    transition: width 0.3s ease;
   }
 
   .hp-bar {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 100%;
   }
 
   .hp-bar-outer {

@@ -125,48 +125,6 @@
       isUpsideDown={true}
     />
 
-    <!-- Roll and Hit display (center) -->
-    <div class="roll-hit-container upside-down">
-      <div class="hit-display">
-        HIT: {game.lastHit !== null ? game.lastHit : ""}
-        {game.lastHit === 0 ? "☠️" : ""}
-      </div>
-      <div class="roll-display">ROLL: {game.lastRoll}</div>
-      <div class="enemy-hp-bar">
-        <div class="enemy-hp-text">
-          Enemy HP: {game.players[Number(!game.turn)].hp}/{game.maxHealth}
-        </div>
-        <div class="enemy-hp-bar-outer">
-          <div
-            class="enemy-hp-bar-inner"
-            style="width: {(game.players[Number(!game.turn)].hp /
-              game.maxHealth) *
-              100}%"
-          ></div>
-        </div>
-      </div>
-    </div>
-    <div class="roll-hit-container">
-      <div class="hit-display">
-        HIT: {game.lastHit !== null ? game.lastHit : ""}
-        {game.lastHit === 0 ? "☠️" : ""}
-      </div>
-      <div class="roll-display">ROLL: {game.lastRoll}</div>
-      <div class="enemy-hp-bar">
-        <div class="enemy-hp-text">
-          Enemy HP: {game.players[Number(!game.turn)].hp}/{game.maxHealth}
-        </div>
-        <div class="enemy-hp-bar-outer">
-          <div
-            class="enemy-hp-bar-inner"
-            style="width: {(game.players[Number(!game.turn)].hp /
-              game.maxHealth) *
-              100}%"
-          ></div>
-        </div>
-      </div>
-    </div>
-
     <PlayerView
       player={0}
       {game}
@@ -193,28 +151,7 @@
     flex-direction: column;
     gap: 20px;
     justify-content: space-between;
-    height: calc(100vh - 50px);
-  }
-
-  .roll-hit-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px 0;
-  }
-
-  .roll-display,
-  .hit-display {
-    font-size: 24px;
-    font-weight: bold;
-    color: red;
-    text-shadow: 2px 2px 0 black;
-  }
-
-  .turn-indicator {
-    text-align: center;
-    margin-top: 10px;
-    font-weight: bold;
+    height: calc(100vh - 100px);
   }
 
   .winner-message {
@@ -241,32 +178,5 @@
     border: 2px solid black;
     background-color: white;
     cursor: pointer;
-  }
-
-  .enemy-hp-bar {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-  }
-
-  .enemy-hp-text {
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .enemy-hp-bar-outer {
-    height: 15px;
-    border: 2px solid black;
-    background-color: white;
-    position: relative;
-  }
-
-  .enemy-hp-bar-inner {
-    height: 100%;
-    background-color: #ff0000;
-    transition: width 0.3s ease;
   }
 </style>
