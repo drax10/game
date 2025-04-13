@@ -14,9 +14,9 @@
       this.gameOver = false;
     }
 
-    rollDice(range = [0, 20]) {
+    rollDice(range = [0, 20], zeroChance = 0.25) {
       // 1/4 chance to roll 0
-      if (Math.random() < 0.25) {
+      if (Math.random() < zeroChance) {
         return 0;
       }
       const rangeSize = range[1] - range[0];
@@ -68,12 +68,12 @@
     // Simulate dice rolling animation
     setTimeout(() => {
       if (selectedAction === "attack") {
-        const roll = game.rollDice([0, 20]);
+        const roll = game.rollDice([0, 20], 0.25);
         game.lastRoll = roll;
         game.lastHit = roll;
         game.attack({ hp: roll, player: Number(!game.turn) });
       } else if (selectedAction === "heal") {
-        const roll = game.rollDice([5, 15]);
+        const roll = game.rollDice([5, 15], 0);
         game.lastRoll = roll;
         game.heal({ hp: roll, player: game.turn });
       }
@@ -104,11 +104,11 @@
 
 <div class="game-container">
   {#if winner}
-    <div class="winner-message upside-down">
-      <h2>{winner} wins!</h2>
-      <button on:click={resetGame}>Play Again</button>
-    </div>
     <div class="winner-message">
+      <div class="upside-down">
+        <h2>{winner} wins!</h2>
+        <button on:click={resetGame}>Play Again</button>
+      </div>
       <h2>{winner} wins!</h2>
       <button on:click={resetGame}>Play Again</button>
     </div>
