@@ -1,8 +1,10 @@
 <script>
+  import PlayerView from "$lib/components/PlayerView.svelte";
+
   // Game logic
   class BattleGame {
     constructor(
-      options = { players: [{ hp: 25 }, { hp: 25 }], maxHealth: 25 },
+      options = { players: [{ hp: 50 }, { hp: 50 }], maxHealth: 60 },
     ) {
       this.players = options.players;
       this.maxHealth = options.maxHealth;
@@ -104,62 +106,15 @@
   {/if}
 
   <div class="game-ui">
-    <!-- Player 2 view (upside down) -->
-    <div class="player-view player-two">
-      <div class="action-container">
-        <div class="action-box">
-          <div
-            class="dice-image"
-            class:disabled={game.turn === 0}
-            class:rolling={isRolling}
-            on:click={() => game.turn === 1 && executeDiceAction()}
-          >
-            <svg viewBox="0 0 24 24" width="100%" height="100%">
-              <rect
-                x="2"
-                y="2"
-                width="20"
-                height="20"
-                fill="#d0d0d0"
-                stroke="black"
-                stroke-width="1"
-              />
-              <circle cx="7" cy="7" r="2" fill="black" />
-              <circle cx="17" cy="7" r="2" fill="black" />
-              <circle cx="7" cy="17" r="2" fill="black" />
-              <circle cx="17" cy="17" r="2" fill="black" />
-              <circle cx="12" cy="12" r="2" fill="black" />
-            </svg>
-          </div>
-          <div class="action-text" class:disabled={game.turn === 0}>
-            <div
-              class:selected={selectedAction === "attack" && game.turn === 1}
-              on:click={() => game.turn === 1 && selectAction("attack")}
-            >
-              Attack
-            </div>
-            <div
-              class:selected={selectedAction === "heal" && game.turn === 1}
-              on:click={() => game.turn === 1 && selectAction("heal")}
-            >
-              Heal
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hp-container">
-        <div class="hp-bar">
-          <div class="hp-text">HP: {game.players[1].hp}/{game.maxHealth}</div>
-          <div class="hp-bar-outer">
-            <div
-              class="hp-bar-inner"
-              style="width: {(game.players[1].hp / game.maxHealth) * 100}%"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PlayerView
+      player={1}
+      {game}
+      {isRolling}
+      {selectedAction}
+      onActionSelect={selectAction}
+      onDiceRoll={executeDiceAction}
+      isUpsideDown={true}
+    />
 
     <!-- Roll and Hit display (center) -->
     {#if game.lastRoll !== null}
@@ -171,62 +126,14 @@
       </div>
     {/if}
 
-    <!-- Player 1 view (normal orientation) -->
-    <div class="player-view player-one">
-      <div class="hp-container">
-        <div class="hp-bar">
-          <div class="hp-text">HP: {game.players[0].hp}/{game.maxHealth}</div>
-          <div class="hp-bar-outer">
-            <div
-              class="hp-bar-inner"
-              style="width: {(game.players[0].hp / game.maxHealth) * 100}%"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="action-container">
-        <div class="action-box">
-          <div class="action-text" class:disabled={game.turn === 1}>
-            <div
-              class:selected={selectedAction === "attack" && game.turn === 0}
-              on:click={() => game.turn === 0 && selectAction("attack")}
-            >
-              Attack
-            </div>
-            <div
-              class:selected={selectedAction === "heal" && game.turn === 0}
-              on:click={() => game.turn === 0 && selectAction("heal")}
-            >
-              Heal
-            </div>
-          </div>
-          <div
-            class="dice-image"
-            class:disabled={game.turn === 1}
-            class:rolling={isRolling}
-            on:click={() => game.turn === 0 && executeDiceAction()}
-          >
-            <svg viewBox="0 0 24 24" width="100%" height="100%">
-              <rect
-                x="2"
-                y="2"
-                width="20"
-                height="20"
-                fill="#d0d0d0"
-                stroke="black"
-                stroke-width="1"
-              />
-              <circle cx="7" cy="7" r="2" fill="black" />
-              <circle cx="17" cy="7" r="2" fill="black" />
-              <circle cx="7" cy="17" r="2" fill="black" />
-              <circle cx="17" cy="17" r="2" fill="black" />
-              <circle cx="12" cy="12" r="2" fill="black" />
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PlayerView
+      player={0}
+      {game}
+      {isRolling}
+      {selectedAction}
+      onActionSelect={selectAction}
+      onDiceRoll={executeDiceAction}
+    />
 
     <!-- Turn indicator -->
     <div class="turn-indicator">
@@ -251,114 +158,6 @@
     gap: 20px;
     justify-content: space-between;
     height: 100vh;
-  }
-
-  .player-view {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .player-two {
-    transform: rotate(180deg);
-  }
-
-  .action-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  .action-box {
-    display: flex;
-    border: 3px solid black;
-    border-radius: 5px;
-    overflow: hidden;
-    width: 100%;
-  }
-
-  .action-text {
-    flex: 1;
-    padding: 10px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .action-text.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .action-text div {
-    padding: 2px 5px;
-  }
-
-  .action-text div.selected {
-    background-color: #f0f0f0;
-  }
-
-  .dice-image {
-    width: 50px;
-    height: 50px;
-    border-left: 3px solid black;
-    padding: 5px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-
-  .dice-image.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .dice-image.rolling {
-    animation: roll 0.5s ease;
-  }
-
-  @keyframes roll {
-    0% {
-      transform: rotate(0deg);
-    }
-    25% {
-      transform: rotate(90deg);
-    }
-    50% {
-      transform: rotate(180deg);
-    }
-    75% {
-      transform: rotate(270deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .hp-container {
-    margin: 5px 0;
-  }
-
-  .hp-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .hp-bar-outer {
-    height: 15px;
-    border: 2px solid black;
-    background-color: white;
-    position: relative;
-  }
-
-  .hp-bar-inner {
-    height: 100%;
-    background-color: #00cc00;
-    transition: width 0.3s ease;
-  }
-
-  .hp-text {
-    font-size: 14px;
-    font-weight: bold;
-    text-align: right;
   }
 
   .roll-hit-container {
