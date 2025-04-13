@@ -20,6 +20,7 @@
           totalDamage: 0,
           totalHealing: 0,
           specialAttackReady: false,
+          usingSpecial: false,
         },
         player2: {
           attacks: 0,
@@ -27,17 +28,20 @@
           totalDamage: 0,
           totalHealing: 0,
           specialAttackReady: false,
+          usingSpecial: false,
         },
       };
     }
 
-    rollDice(range = [0, 20], zeroChance = 0.25) {
-      // 1/4 chance to roll 0
-      if (Math.random() < zeroChance) {
-        return 0;
+    rollDice(range, chanceOfZero) {
+      if (this.stats[`player${this.turn + 1}`].usingSpecial) {
+        chanceOfZero = 0; // No chance of zero on special attacks
       }
-      const rangeSize = range[1] - range[0];
-      return Math.ceil(Math.random() * rangeSize) + range[0];
+      const roll =
+        Math.random() < chanceOfZero
+          ? 0
+          : Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+      return roll;
     }
 
     logAction(action, player, value) {
@@ -54,7 +58,7 @@
       this.stats[`player${this.turn + 1}`].totalDamage += damage;
 
       // Check for special attack activation
-      if (this.stats[`player${this.turn + 1}`].attacks % 10 === 0) {
+      if (this.stats[`player${this.turn + 1}`].attacks % 2 === 0) {
         this.stats[`player${this.turn + 1}`].specialAttackReady = true;
       }
 
@@ -84,6 +88,13 @@
         this.gameOver = true;
       }
     }
+
+    toggleSpecialAttack() {
+      if (this.stats[`player${this.turn + 1}`].specialAttackReady) {
+        this.stats[`player${this.turn + 1}`].usingSpecial =
+          !this.stats[`player${this.turn + 1}`].usingSpecial;
+      }
+    }
   }
 
   // Initialize game
@@ -108,27 +119,35 @@
     setTimeout(() => {
       if (selectedAction === "attack") {
         let roll = game.rollDice([0, 20], 0.25);
+        let secondRoll = 0;
 
         // Check for special attack
-        if (game.stats[`player${game.turn + 1}`].specialAttackReady) {
-          const secondRoll = game.rollDice([0, 20], 0.25);
+        if (game.stats[`player${game.turn + 1}`].usingSpecial) {
+          secondRoll = game.rollDice([0, 20], 0);
           roll += secondRoll;
+          game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
+          game.stats[`player${game.turn + 1}`].usingSpecial = false;
+        } else {
+          game.lastRoll = roll;
         }
 
-        game.lastRoll = roll;
         game.lastHit = roll;
         game.attack({ hp: roll, player: Number(!game.turn) });
       } else if (selectedAction === "heal") {
         let roll = game.rollDice([5, 15], 0);
 
         // Check for special attack
-        if (game.stats[`player${game.turn + 1}`].specialAttackReady) {
+        if (game.stats[`player${game.turn + 1}`].usingSpecial) {
+          const baseHeal = roll;
           roll += 25;
+          game.lastRoll = `${baseHeal} + 25`;
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
+          game.stats[`player${game.turn + 1}`].usingSpecial = false;
+        } else {
+          game.lastRoll = roll;
         }
 
-        game.lastRoll = roll;
         game.heal({ hp: roll, player: game.turn });
       }
 

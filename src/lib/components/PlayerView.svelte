@@ -14,6 +14,10 @@
   function getCurrentPlayer() {
     return player;
   }
+
+  function toggleSpecial() {
+    game.toggleSpecialAttack();
+  }
 </script>
 
 <div class="player-view" class:upside-down={isUpsideDown}>
@@ -22,11 +26,32 @@
       HIT: {game.lastHit !== null ? game.lastHit : ""}
       {game.lastHit === 0 ? "☠️" : ""}
     </div>
-    <div class="roll-display">ROLL: {game.lastRoll}</div>
+    <div class="roll-display">
+      {#if game.lastRoll !== null}
+        {#if typeof game.lastRoll === "string" && game.lastRoll.includes("+")}
+          SPECIAL: {game.lastRoll}
+        {:else}
+          ROLL: {game.lastRoll}
+        {/if}
+      {/if}
+    </div>
 
     <br />
     {#if game.stats[`player${player}`].specialAttackReady}
-      <div class="special-attack-ready">SPECIAL READY!</div>
+      <div class="special-attack-container">
+        <div class="special-attack-ready">SPECIAL READY!</div>
+        {#if game.turn === player - 1}
+          <button
+            class="special-toggle"
+            class:active={game.stats[`player${player}`].usingSpecial}
+            on:click={toggleSpecial}
+          >
+            {game.stats[`player${player}`].usingSpecial
+              ? "SPECIAL ON"
+              : "USE SPECIAL"}
+          </button>
+        {/if}
+      </div>
     {:else}
       <div class="special-attack-progress">
         SPECIAL: {game.stats[`player${player}`].attacks % 10}/10
@@ -273,40 +298,42 @@
     text-align: right;
   }
 
-  .special-attack-ready {
-    background: #ff0;
-    color: #000;
-    padding: 4px 8px;
-    font-family: "Press Start 2P", monospace;
-    font-size: 10px;
-    text-align: center;
+  .special-attack-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
     margin-bottom: 5px;
-    border: 2px solid #000;
-    animation: pulse 1s infinite;
-    z-index: 2;
   }
 
-  .special-attack-progress {
+  .special-toggle {
     background: #000;
     color: #ff0;
+    border: 2px solid #ff0;
     padding: 4px 8px;
     font-family: "Press Start 2P", monospace;
     font-size: 10px;
-    text-align: center;
-    margin-bottom: 5px;
-    border: 2px solid #ff0;
-    z-index: 2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
   }
 
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
+  .special-toggle.active {
+    background: #ff0;
+    color: #000;
+    box-shadow: 0 0 10px #ff0;
+  }
+
+  .special-toggle:hover {
+    transform: scale(1.05);
+  }
+
+  .roll-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    text-shadow: 2px 2px 0 black;
+    min-height: 30px;
+    text-align: center;
   }
 </style>
