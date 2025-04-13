@@ -224,7 +224,7 @@
     flex-direction: column;
     gap: 20px;
     justify-content: space-between;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 100px);
   }
 
   .winner-message {
