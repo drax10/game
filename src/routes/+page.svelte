@@ -130,12 +130,14 @@
       <div class="roll-hit-container upside-down">
         <div class="hit-display">
           HIT: {game.lastHit !== null ? game.lastHit : ""}
+          {game.lastHit === 0 ? "☠️" : ""}
         </div>
         <div class="roll-display">ROLL: {game.lastRoll}</div>
       </div>
       <div class="roll-hit-container">
         <div class="hit-display">
           HIT: {game.lastHit !== null ? game.lastHit : ""}
+          {game.lastHit === 0 ? "☠️" : ""}
         </div>
         <div class="roll-display">ROLL: {game.lastRoll}</div>
       </div>
