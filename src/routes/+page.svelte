@@ -128,62 +128,35 @@
 <div class="game-container">
   {#if winner}
     <div class="winner-message">
-      <div class="upside-down">
+      <div class="game-over-container">
         <h2 class="game-over">GAME OVER</h2>
         <h2 class="winner">{winner} WINS!</h2>
-        <div class="game-stats">
+        <div class="stats-container">
           <div class="player-stats">
-            <h4>PLAYER 1</h4>
+            <h4>P1</h4>
             <div class="stat-row">
-              <span class="stat-label">DAMAGE:</span>
+              <span class="stat-label">DMG:</span>
               <span class="stat-value">{game.stats.player1.totalDamage}</span>
             </div>
             <div class="stat-row">
-              <span class="stat-label">HEALING:</span>
+              <span class="stat-label">HL:</span>
               <span class="stat-value">{game.stats.player1.totalHealing}</span>
             </div>
           </div>
           <div class="player-stats">
-            <h4>PLAYER 2</h4>
+            <h4>P2</h4>
             <div class="stat-row">
-              <span class="stat-label">DAMAGE:</span>
+              <span class="stat-label">DMG:</span>
               <span class="stat-value">{game.stats.player2.totalDamage}</span>
             </div>
             <div class="stat-row">
-              <span class="stat-label">HEALING:</span>
+              <span class="stat-label">HL:</span>
               <span class="stat-value">{game.stats.player2.totalHealing}</span>
             </div>
           </div>
         </div>
         <button class="play-again" on:click={resetGame}>PLAY AGAIN</button>
       </div>
-      <h2 class="game-over">GAME OVER</h2>
-      <h2 class="winner">{winner} WINS!</h2>
-      <div class="game-stats">
-        <div class="player-stats">
-          <h4>PLAYER 1</h4>
-          <div class="stat-row">
-            <span class="stat-label">DAMAGE:</span>
-            <span class="stat-value">{game.stats.player1.totalDamage}</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">HEALING:</span>
-            <span class="stat-value">{game.stats.player1.totalHealing}</span>
-          </div>
-        </div>
-        <div class="player-stats">
-          <h4>PLAYER 2</h4>
-          <div class="stat-row">
-            <span class="stat-label">DAMAGE:</span>
-            <span class="stat-value">{game.stats.player2.totalDamage}</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">HEALING:</span>
-            <span class="stat-value">{game.stats.player2.totalHealing}</span>
-          </div>
-        </div>
-      </div>
-      <button class="play-again" on:click={resetGame}>PLAY AGAIN</button>
     </div>
   {/if}
 
@@ -233,60 +206,66 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
+  }
+
+  .game-over-container {
+    background: #000;
+    border: 4px solid #fff;
     padding: 20px;
-    color: #fff;
-    text-shadow: 2px 2px 0 #000;
+    text-align: center;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    width: 300px;
   }
 
   .game-over {
-    font-size: 48px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 24px;
     color: #ff0000;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 2px;
   }
 
   .winner {
-    font-size: 36px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 20px;
     color: #ffff00;
-    margin: 10px 0 30px;
+    margin: 10px 0 20px;
     text-transform: uppercase;
-    letter-spacing: 2px;
   }
 
-  .game-stats {
+  .stats-container {
     display: flex;
-    gap: 40px;
-    margin-bottom: 30px;
+    justify-content: space-around;
+    margin: 20px 0;
   }
 
   .player-stats {
     text-align: center;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    background: #111;
     border: 2px solid #fff;
-    border-radius: 5px;
-    min-width: 150px;
   }
 
   .player-stats h4 {
-    margin: 0 0 15px;
-    color: #00ff00;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    margin: 0 0 10px;
+    color: #0f0;
+    font-family: "Press Start 2P", monospace;
+    font-size: 14px;
   }
 
   .stat-row {
     display: flex;
     justify-content: space-between;
     margin: 5px 0;
-    font-size: 14px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 12px;
+    color: #fff;
   }
 
   .stat-label {
@@ -295,24 +274,22 @@
 
   .stat-value {
     color: #fff;
-    font-weight: bold;
+    margin-left: 10px;
   }
 
   .play-again {
-    background: #ff0000;
+    background: #000;
     color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
+    border: 2px solid #fff;
+    padding: 8px 16px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 12px;
     cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-    transition: transform 0.2s;
+    margin-top: 10px;
   }
 
   .play-again:hover {
-    transform: scale(1.1);
+    background: #fff;
+    color: #000;
   }
 </style>
