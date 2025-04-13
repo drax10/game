@@ -129,63 +129,61 @@
   {#if winner}
     <div class="winner-message">
       <div class="upside-down">
-        <h2>{winner} wins!</h2>
+        <h2 class="game-over">GAME OVER</h2>
+        <h2 class="winner">{winner} WINS!</h2>
         <div class="game-stats">
-          <h3>Game Statistics</h3>
           <div class="player-stats">
-            <h4>Player 1</h4>
-            <p>Attacks: {game.stats.player1.attacks}</p>
-            <p>Heals: {game.stats.player1.heals}</p>
-            <p>Total Damage: {game.stats.player1.totalDamage}</p>
-            <p>Total Healing: {game.stats.player1.totalHealing}</p>
+            <h4>PLAYER 1</h4>
+            <div class="stat-row">
+              <span class="stat-label">DAMAGE:</span>
+              <span class="stat-value">{game.stats.player1.totalDamage}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">HEALING:</span>
+              <span class="stat-value">{game.stats.player1.totalHealing}</span>
+            </div>
           </div>
           <div class="player-stats">
-            <h4>Player 2</h4>
-            <p>Attacks: {game.stats.player2.attacks}</p>
-            <p>Heals: {game.stats.player2.heals}</p>
-            <p>Total Damage: {game.stats.player2.totalDamage}</p>
-            <p>Total Healing: {game.stats.player2.totalHealing}</p>
-          </div>
-          <div class="game-log">
-            <h4>Game Log</h4>
-            {#each game.history as entry}
-              <p>
-                [{entry.timestamp}] Player {entry.player + 1}
-                {entry.action === "attack" ? "attacked" : "healed"} for {entry.value}
-              </p>
-            {/each}
+            <h4>PLAYER 2</h4>
+            <div class="stat-row">
+              <span class="stat-label">DAMAGE:</span>
+              <span class="stat-value">{game.stats.player2.totalDamage}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">HEALING:</span>
+              <span class="stat-value">{game.stats.player2.totalHealing}</span>
+            </div>
           </div>
         </div>
-        <button on:click={resetGame}>Play Again</button>
+        <button class="play-again" on:click={resetGame}>PLAY AGAIN</button>
       </div>
-      <h2>{winner} wins!</h2>
+      <h2 class="game-over">GAME OVER</h2>
+      <h2 class="winner">{winner} WINS!</h2>
       <div class="game-stats">
-        <h3>Game Statistics</h3>
         <div class="player-stats">
-          <h4>Player 1</h4>
-          <p>Attacks: {game.stats.player1.attacks}</p>
-          <p>Heals: {game.stats.player1.heals}</p>
-          <p>Total Damage: {game.stats.player1.totalDamage}</p>
-          <p>Total Healing: {game.stats.player1.totalHealing}</p>
+          <h4>PLAYER 1</h4>
+          <div class="stat-row">
+            <span class="stat-label">DAMAGE:</span>
+            <span class="stat-value">{game.stats.player1.totalDamage}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">HEALING:</span>
+            <span class="stat-value">{game.stats.player1.totalHealing}</span>
+          </div>
         </div>
         <div class="player-stats">
-          <h4>Player 2</h4>
-          <p>Attacks: {game.stats.player2.attacks}</p>
-          <p>Heals: {game.stats.player2.heals}</p>
-          <p>Total Damage: {game.stats.player2.totalDamage}</p>
-          <p>Total Healing: {game.stats.player2.totalHealing}</p>
-        </div>
-        <div class="game-log">
-          <h4>Game Log</h4>
-          {#each game.history as entry}
-            <p>
-              [{entry.timestamp}] Player {entry.player + 1}
-              {entry.action === "attack" ? "attacked" : "healed"} for {entry.value}
-            </p>
-          {/each}
+          <h4>PLAYER 2</h4>
+          <div class="stat-row">
+            <span class="stat-label">DAMAGE:</span>
+            <span class="stat-value">{game.stats.player2.totalDamage}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">HEALING:</span>
+            <span class="stat-value">{game.stats.player2.totalHealing}</span>
+          </div>
         </div>
       </div>
-      <button on:click={resetGame}>Play Again</button>
+      <button class="play-again" on:click={resetGame}>PLAY AGAIN</button>
     </div>
   {/if}
 
@@ -235,52 +233,86 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
     padding: 20px;
-    overflow-y: auto;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
   }
 
-  .upside-down {
-    transform: rotate(180deg);
+  .game-over {
+    font-size: 48px;
+    color: #ff0000;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
 
-  .winner-message button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    border: 2px solid black;
-    background-color: white;
-    cursor: pointer;
+  .winner {
+    font-size: 36px;
+    color: #ffff00;
+    margin: 10px 0 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
 
   .game-stats {
-    margin-top: 20px;
-    text-align: center;
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30px;
   }
 
   .player-stats {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid black;
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #fff;
     border-radius: 5px;
+    min-width: 150px;
   }
 
-  .game-log {
-    margin-top: 20px;
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: #f8f8f8;
+  .player-stats h4 {
+    margin: 0 0 15px;
+    color: #00ff00;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
-  .game-log p {
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
     margin: 5px 0;
-    font-size: 12px;
+    font-size: 14px;
+  }
+
+  .stat-label {
+    color: #aaa;
+  }
+
+  .stat-value {
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .play-again {
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: transform 0.2s;
+  }
+
+  .play-again:hover {
+    transform: scale(1.1);
   }
 </style>
