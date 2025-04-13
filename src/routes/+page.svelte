@@ -15,8 +15,12 @@
     }
 
     rollDice(range = [0, 20]) {
+      // 1/4 chance to roll 0
+      if (Math.random() < 0.25) {
+        return 0;
+      }
       const rangeSize = range[1] - range[0];
-      return Math.floor(Math.random() * rangeSize) + range[0];
+      return Math.ceil(Math.random() * rangeSize) + range[0];
     }
 
     attack({ hp, player }) {
@@ -63,13 +67,14 @@
 
     // Simulate dice rolling animation
     setTimeout(() => {
-      const roll = game.rollDice();
-      game.lastRoll = roll;
-
       if (selectedAction === "attack") {
+        const roll = game.rollDice([0, 20]);
+        game.lastRoll = roll;
         game.lastHit = roll;
         game.attack({ hp: roll, player: Number(!game.turn) });
       } else if (selectedAction === "heal") {
+        const roll = game.rollDice([5, 15]);
+        game.lastRoll = roll;
         game.heal({ hp: roll, player: game.turn });
       }
 
@@ -99,6 +104,10 @@
 
 <div class="game-container">
   {#if winner}
+    <div class="winner-message upside-down">
+      <h2>{winner} wins!</h2>
+      <button on:click={resetGame}>Play Again</button>
+    </div>
     <div class="winner-message">
       <h2>{winner} wins!</h2>
       <button on:click={resetGame}>Play Again</button>
@@ -118,6 +127,12 @@
 
     <!-- Roll and Hit display (center) -->
     {#if game.lastRoll !== null}
+      <div class="roll-hit-container upside-down">
+        <div class="hit-display">
+          HIT: {game.lastHit !== null ? game.lastHit : ""}
+        </div>
+        <div class="roll-display">ROLL: {game.lastRoll}</div>
+      </div>
       <div class="roll-hit-container">
         <div class="hit-display">
           HIT: {game.lastHit !== null ? game.lastHit : ""}
@@ -193,6 +208,10 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
+  }
+
+  .upside-down {
+    transform: rotate(180deg);
   }
 
   .winner-message button {
