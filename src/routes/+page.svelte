@@ -141,7 +141,7 @@
             game.lastRoll = `Critical Miss!`;
           } else {
             secondRoll = game.rollDice([0, 20], 0);
-            game.lastRoll = `${roll - secondRoll} + ${secondRoll}`;
+            game.lastRoll = `${roll} + ${secondRoll}`;
             roll += secondRoll;
           }
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
