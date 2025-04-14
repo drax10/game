@@ -124,6 +124,7 @@
       </div>
     </div>
   </div>
+  <div class="win-counter">Wins: {game.stats[`player${player}`].wins}</div>
 </div>
 
 <style>
@@ -354,5 +355,13 @@
   .enemy-special-progress {
     color: #000;
     text-shadow: none;
+  }
+
+  .win-counter {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #000;
   }
 </style>

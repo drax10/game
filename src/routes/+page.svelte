@@ -22,6 +22,7 @@
           totalHealing: 0,
           specialAttackReady: false,
           usingSpecial: false,
+          wins: 0,
         },
         player2: {
           attacks: 0,
@@ -30,6 +31,7 @@
           totalHealing: 0,
           specialAttackReady: false,
           usingSpecial: false,
+          wins: 0,
         },
       };
     }
@@ -160,11 +162,7 @@
       }
 
       if (game.gameOver) {
-        if (game.players[0].hp <= 0) {
-          winner = "Player 2";
-        } else if (game.players[1].hp <= 0) {
-          winner = "Player 1";
-        }
+        handleGameOver();
       } else {
         game.nextTurn();
         // Reset selected action for next player
@@ -183,6 +181,17 @@
     winner = null;
     selectedAction = "attack";
     showStats = false;
+  }
+
+  // Handle game over
+  function handleGameOver() {
+    if (game.players[0].hp <= 0) {
+      winner = "Player 2";
+      game.stats.player2.wins++;
+    } else if (game.players[1].hp <= 0) {
+      winner = "Player 1";
+      game.stats.player1.wins++;
+    }
   }
 </script>
 
