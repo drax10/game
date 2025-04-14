@@ -186,8 +186,17 @@
 
   // Reset game
   function resetGame() {
+    // Preserve the win counts
+    const player1Wins = game.stats.player1.wins;
+    const player2Wins = game.stats.player2.wins;
+
     startingPlayer = Number(!startingPlayer); // Switch starting player
     game = new BattleGame();
+
+    // Restore the win counts
+    game.stats.player1.wins = player1Wins;
+    game.stats.player2.wins = player2Wins;
+
     game.turn = startingPlayer; // Set the new starting player
     winner = null;
     selectedAction = "attack";
