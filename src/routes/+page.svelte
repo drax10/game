@@ -216,40 +216,50 @@
   }
 </script>
 
-<div class="game-container">
-  {#if winner && showStats}
-    <WinnerMessage {game} {winner} onPlayAgain={resetGame} />
-  {/if}
-
-  <div class="game-ui">
-    <PlayerView
-      player={1}
-      {game}
-      {isRolling}
-      {selectedAction}
-      onActionSelect={selectAction}
-      onDiceRoll={executeDiceAction}
-      isUpsideDown={true}
-    />
-
-    {#if game.gameOver}
-      <button class="see-stats" on:click={() => (showStats = true)}>
-        GAME OVER - SEE STATS
-      </button>
+<div class="root">
+  <div class="game-container">
+    {#if winner && showStats}
+      <WinnerMessage {game} {winner} onPlayAgain={resetGame} />
     {/if}
 
-    <PlayerView
-      player={2}
-      {game}
-      {isRolling}
-      {selectedAction}
-      onActionSelect={selectAction}
-      onDiceRoll={executeDiceAction}
-    />
+    <div class="game-ui">
+      <PlayerView
+        player={1}
+        {game}
+        {isRolling}
+        {selectedAction}
+        onActionSelect={selectAction}
+        onDiceRoll={executeDiceAction}
+        isUpsideDown={true}
+      />
+
+      {#if game.gameOver}
+        <button class="see-stats" on:click={() => (showStats = true)}>
+          GAME OVER - SEE STATS
+        </button>
+      {/if}
+
+      <PlayerView
+        player={2}
+        {game}
+        {isRolling}
+        {selectedAction}
+        onActionSelect={selectAction}
+        onDiceRoll={executeDiceAction}
+      />
+    </div>
   </div>
 </div>
 
 <style>
+  .root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+  }
   .game-container {
     font-family: "Courier New", monospace;
     max-width: 320px;
@@ -257,6 +267,7 @@
     background-color: white;
     position: relative;
     padding: 10px;
+    width: 100%;
   }
 
   .game-ui {

@@ -114,17 +114,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   .game-over-container {
     background-color: white;
-    border: 3px solid #ff0;
+    border: 4px solid black;
     padding: 20px;
     display: flex;
     gap: 20px;
-    max-width: 600px;
-    width: 100%;
+    max-width: 90%;
+    width: 90%;
+    max-height: 90vh;
     transform: rotate(-90deg);
     transform-origin: center;
   }
