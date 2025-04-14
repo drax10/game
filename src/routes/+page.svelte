@@ -14,6 +14,10 @@
       this.lastHit = null;
       this.gameOver = false;
       this.history = [];
+      this.scoreHistory = {
+        player1: [],
+        player2: [],
+      };
       this.stats = {
         player1: {
           attacks: 0,
@@ -50,6 +54,14 @@
     logAction(action, player, value) {
       const timestamp = new Date().toLocaleTimeString();
       this.history.push({ timestamp, action, player, value });
+
+      // Calculate and store current scores
+      const p1Score =
+        this.stats.player1.totalDamage - this.stats.player2.totalHealing;
+      const p2Score =
+        this.stats.player2.totalDamage - this.stats.player1.totalHealing;
+      this.scoreHistory.player1.push(p1Score);
+      this.scoreHistory.player2.push(p2Score);
     }
 
     attack({ hp, player }) {
