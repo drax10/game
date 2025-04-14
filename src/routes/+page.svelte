@@ -89,6 +89,13 @@
     checkGameOver() {
       if (this.players[0].hp <= 0 || this.players[1].hp <= 0) {
         this.gameOver = true;
+        if (this.players[0].hp <= 0) {
+          winner = "Player 2";
+          this.stats.player2.wins++;
+        } else if (this.players[1].hp <= 0) {
+          winner = "Player 1";
+          this.stats.player1.wins++;
+        }
       }
     }
 
@@ -155,14 +162,18 @@
           game.stats[`player${game.turn + 1}`].specialAttackReady = false;
           game.stats[`player${game.turn + 1}`].usingSpecial = false;
         } else {
-          game.lastRoll = roll;
+          if (roll > 0) {
+            game.lastRoll = roll;
+          } else {
+            game.lastRoll = `Miss!`;
+          }
         }
 
         game.heal({ hp: roll, player: game.turn });
       }
 
       if (game.gameOver) {
-        handleGameOver();
+        // Game over is already handled in checkGameOver
       } else {
         game.nextTurn();
         // Reset selected action for next player
@@ -181,17 +192,6 @@
     winner = null;
     selectedAction = "attack";
     showStats = false;
-  }
-
-  // Handle game over
-  function handleGameOver() {
-    if (game.players[0].hp <= 0) {
-      winner = "Player 2";
-      game.stats.player2.wins++;
-    } else if (game.players[1].hp <= 0) {
-      winner = "Player 1";
-      game.stats.player1.wins++;
-    }
   }
 </script>
 
